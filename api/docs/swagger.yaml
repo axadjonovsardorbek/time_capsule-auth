@@ -1,0 +1,379 @@
+definitions:
+  genproto.Tokens:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
+  genproto.UsersForgotPassword:
+    properties:
+      email:
+        type: string
+    type: object
+  genproto.UsersLogin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  genproto.UsersProfile:
+    properties:
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      username:
+        type: string
+    type: object
+  genproto.UsersRegister:
+    properties:
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  genproto.UsersResetPassword:
+    properties:
+      new_password:
+        type: string
+      reset_token:
+        type: string
+    type: object
+  genproto.UsersSettings:
+    properties:
+      language:
+        type: string
+      notifications_enabled:
+        type: string
+      privacy_level:
+        type: string
+      theme:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /change-password:
+    put:
+      consumes:
+      - application/json
+      description: ChangePassword
+      parameters:
+      - description: CurrentPassword
+        in: query
+        name: current_password
+        type: string
+      - description: NewPassword
+        in: query
+        name: new_password
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Changed password
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: Password incorrect
+          schema:
+            type: string
+        "500":
+          description: Server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: ChangePassword
+      tags:
+      - user
+  /forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Send a reset password code to the user's email
+      parameters:
+      - description: Email data
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.UsersForgotPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reset password code sent successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Send a reset password code to the user's email
+      tags:
+      - user
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with email and password
+      parameters:
+      - description: User login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.UsersLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT tokens
+          schema:
+            $ref: '#/definitions/genproto.Tokens'
+        "400":
+          description: Invalid request payload
+          schema:
+            type: string
+        "401":
+          description: Invalid email or password
+          schema:
+            type: string
+      summary: Login a user
+      tags:
+      - auth
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Get the profile of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/genproto.UsersProfile'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: User not found
+          schema:
+            type: string
+        "500":
+          description: Server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get user profile
+      tags:
+      - user
+  /profile/update:
+    put:
+      consumes:
+      - application/json
+      description: Update the profil of the authenticated user
+      parameters:
+      - description: FullName
+        in: query
+        name: full_name
+        type: string
+      - description: DateOfBirth
+        in: query
+        name: date_of_birth
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile updated
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: User settings not found
+          schema:
+            type: string
+        "500":
+          description: Server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update user profile
+      tags:
+      - user
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: User registration request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.UsersRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered
+          schema:
+            type: string
+        "400":
+          description: Invalid request payload
+          schema:
+            type: string
+        "500":
+          description: Server error
+          schema:
+            type: string
+      summary: Register a new user
+      tags:
+      - auth
+  /reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset user password with the provided reset code and new password
+      parameters:
+      - description: Reset code data
+        in: body
+        name: resetCode
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.UsersResetPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password reset successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Reset user password
+      tags:
+      - User
+  /settings:
+    get:
+      consumes:
+      - application/json
+      description: Get the settings of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/genproto.UsersSettings'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: User settings not found
+          schema:
+            type: string
+        "500":
+          description: Server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get user settings
+      tags:
+      - user
+  /settings/update:
+    put:
+      consumes:
+      - application/json
+      description: Update the settings of the authenticated user
+      parameters:
+      - description: PrivacyLevel
+        in: query
+        name: privacy_level
+        type: string
+      - description: NotificationsEnabled
+        in: query
+        name: notifications_enabled
+        type: string
+      - description: Theme
+        in: query
+        name: theme
+        type: string
+      - description: Language
+        in: query
+        name: language
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User settings updated
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: User settings not found
+          schema:
+            type: string
+        "500":
+          description: Server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update user settings
+      tags:
+      - user
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
