@@ -3,6 +3,7 @@ package handler
 import (
 	ap "auth/genproto"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -39,13 +40,13 @@ func (h *Handler) Register(c *gin.Context) {
 	}
 	req.Password = string(hashedPassword)
 
-	_, err = h.User.Register(context.Background(), &req)
+	// _, err = h.User.Register(context.Background(), &req)
 
-	// input, err := json.Marshal(req)
-	// if err != nil {
-	// 	c.JSON(500, gin.H{"error": err.Error()})
-	// }
-	// err = h.Producer.ProduceMessages("user-create", input)
+	input, err := json.Marshal(&req)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+	}
+	err = h.Producer.ProduceMessages("user", input)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -327,9 +328,9 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 	fmt.Println(req.Email)
 
 	// input,err := json.Marshal(req)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-	}
+	// if err != nil {
+	// 	c.JSON(500, gin.H{"error": err.Error()})
+	// }
 
 	// err = h.Producer.ProduceMessages("forgot_password",input)
 	if err != nil {
@@ -345,7 +346,8 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 // @Tags user
 // @Accept  json
 // @Produce  json
-// @Param  resetCode  body  ap.UsersResetPassword  true  "Reset code data"
+// @Param reset_token query string false "ResetToken"
+// @Param new_password query string false "NewPassword"
 // @Success 200 {object} string "Password reset successfully"
 // @Failure 400 {object} string "Invalid input"
 // @Failure 500 {object} string "Internal server error"
@@ -353,10 +355,20 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 // @Router /reset-password [post]
 func (h *Handler) ResetPassword(c *gin.Context) {
 	var resetCode ap.UsersResetPassword
-	if err := c.ShouldBindJSON(&resetCode); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+	reset_token := c.Query("reset_token")
+	new_password := c.Query("new_password")
+
+	claims, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
+
+	email := claims.(jwt.MapClaims)["email"].(string)
+
+	resetCode.NewPassword = new_password
+	resetCode.ResetToken = reset_token
+	resetCode.Email = email
 
 	_, err := h.User.ResetPassword(context.Background(), &resetCode)
 	if err != nil {

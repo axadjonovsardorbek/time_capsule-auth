@@ -187,7 +187,7 @@ func (u *UsersRepo) ForgotPassword(req *ap.UsersForgotPassword) (*ap.Void, error
 	u.rdb.Set(context.Background(), req.Email, code, time.Minute*5)
 
 	from := "axadjonovsardorbeck@gmail.com"
-	password := "pysp qadp uwle aetd"
+	password := "ypuw yybh sqjr boww"
 	err = verification.SendVerificationCode(verification.Params{
 		From:     from,
 		Password: password,
@@ -203,7 +203,7 @@ func (u *UsersRepo) ForgotPassword(req *ap.UsersForgotPassword) (*ap.Void, error
 }
 
 func (u *UsersRepo) ResetPassword(req *ap.UsersResetPassword) (*ap.Void, error) {
-	em, err := u.rdb.Get(context.Background(), req.ResetToken).Result()
+	em, err := u.rdb.Get(context.Background(), req.Email).Result()
 	log.Println(req.ResetToken, err)
 	if err != nil {
 		return nil, errors.New("invalid code or code expired")

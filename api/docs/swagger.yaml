@@ -46,13 +46,6 @@ definitions:
       username:
         type: string
     type: object
-  genproto.UsersResetPassword:
-    properties:
-      new_password:
-        type: string
-      reset_token:
-        type: string
-    type: object
   genproto.UsersSettings:
     properties:
       language:
@@ -270,12 +263,14 @@ paths:
       - application/json
       description: Reset user password with the provided reset code and new password
       parameters:
-      - description: Reset code data
-        in: body
-        name: resetCode
-        required: true
-        schema:
-          $ref: '#/definitions/genproto.UsersResetPassword'
+      - description: ResetToken
+        in: query
+        name: reset_token
+        type: string
+      - description: NewPassword
+        in: query
+        name: new_password
+        type: string
       produces:
       - application/json
       responses:
@@ -295,7 +290,7 @@ paths:
       - BearerAuth: []
       summary: Reset user password
       tags:
-      - User
+      - user
   /settings:
     get:
       consumes:

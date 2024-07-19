@@ -22,14 +22,18 @@ func main() {
 
 	defer conn.Db.Close()
 
-	kafka, err := kafka.NewKafkaProducer([]string{"localhost:9092"})
+	prod, err := kafka.NewKafkaProducer([]string{"localhost:9092"})
+	us := service.NewUsersService(conn)
+	kfk := kafka.NewKafkaConsumerManager()
+	broker := []string{"localhost:9092"}
+	kfk.RegisterConsumer(broker, "user", "u", kafka.UserCreateHandler(us))
+	
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-
-	us := service.NewUsersService(conn)
-	handler := handler.NewHandler(us, kafka)
+	
+	handler := handler.NewHandler(us, prod)
 
 	roter := api.NewApi(handler)
 	log.Println("Server is running on port ", cf.AUTH_PORT)

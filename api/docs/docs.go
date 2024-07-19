@@ -339,18 +339,21 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "user"
                 ],
                 "summary": "Reset user password",
                 "parameters": [
                     {
-                        "description": "Reset code data",
-                        "name": "resetCode",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/genproto.UsersResetPassword"
-                        }
+                        "type": "string",
+                        "description": "ResetToken",
+                        "name": "reset_token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "NewPassword",
+                        "name": "new_password",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -564,17 +567,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "genproto.UsersResetPassword": {
-            "type": "object",
-            "properties": {
-                "new_password": {
-                    "type": "string"
-                },
-                "reset_token": {
                     "type": "string"
                 }
             }
