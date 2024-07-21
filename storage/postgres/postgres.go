@@ -30,7 +30,7 @@ func NewPostgresStorage(config config.Config) (*Storage, error) {
 	}
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: "redis:6379",
 	})
 
 	user := NewUsersRepo(db, rdb)

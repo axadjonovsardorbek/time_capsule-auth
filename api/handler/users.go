@@ -45,6 +45,7 @@ func (h *Handler) Register(c *gin.Context) {
 	input, err := json.Marshal(&req)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
+		return 
 	}
 	err = h.Producer.ProduceMessages("user", input)
 
@@ -335,6 +336,7 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 	// err = h.Producer.ProduceMessages("forgot_password",input)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(200, gin.H{"message": "Reset password code sent successfully"})

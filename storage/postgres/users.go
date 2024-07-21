@@ -39,11 +39,12 @@ func (u *UsersRepo) Register(req *ap.UsersRegister) (*ap.Void, error) {
 		email,
 		password_hash,
 		full_name,
-		date_of_birth
-	) VALUES ($1, $2, $3, $4, $5, $6)
+		date_of_birth,
+		role
+	) VALUES ($1, $2, $3, $4, $5, $6, $7)
 	`
 
-	_, err := u.db.Exec(query, id, req.Username, req.Email, req.Password, req.FullName, req.DateOfBirth)
+	_, err := u.db.Exec(query, id, req.Username, req.Email, req.Password, req.FullName, req.DateOfBirth, req.Role)
 
 	if err != nil {
 		log.Println("Error while registering user: ", err)
@@ -91,7 +92,7 @@ func (u *UsersRepo) Login(req *ap.UsersLogin) (*ap.Tokens, error) {
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(password), []byte(req.Password)); err != nil {
-		return nil, errors.New("invalid email or password")
+		return nil, errors.New("invalid username or password")
 	}
 
 	token := t.GenerateJWTToken(id, email, username)

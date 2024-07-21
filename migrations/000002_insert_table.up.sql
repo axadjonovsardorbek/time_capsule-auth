@@ -2,7 +2,8 @@ INSERT INTO users (id, username, email, password_hash, full_name, date_of_birth,
 VALUES 
     ('11111111-1111-1111-1111-111111111111', 'alice', 'alice@example.com', 'cgmS2r77aQ5hUbVFtQrr7JSVbnJkv60R2c/58h7w3Bg=', 'Alice Wonderland', '1990-05-15', 'friends_only', 'off', 'en', 'system'),
     ('22222222-2222-2222-2222-222222222222', 'bob', 'bob@example.com', 'mM2U+kjzF7LyPLFiSeTAZ1JXLvRHylfJc+X0+uqY37E=', 'Bob Builder', '1985-07-20', 'nobody', 'off', 'es', 'dark'),
-    ('33333333-3333-3333-3333-333333333333', 'charlie', 'charlie@example.com', 'hR0v8XWaaJ9Gh1CeqfgbX5F++2HpCXnA7Oo+/djWbl8=', 'Charlie Chocolate', '2000-12-25', 'all', 'on', 'fr', 'light');
+    ('33333333-3333-3333-3333-333333333333', 'charlie', 'charlie@example.com', 'hR0v8XWaaJ9Gh1CeqfgbX5F++2HpCXnA7Oo+/djWbl8=', 'Charlie Chocolate', '2000-12-25', 'all', 'on', 'fr', 'light'),
+    ('d6f6c36e-c5ff-47a2-a0c2-5fca4c43a686', 'xxcv', 'axadjonovsardorbeck@gmail.com', '$2a$10$unxgF4/PUcRcelaEAkCy4e61LN.PHvijmtbpyG1tQKoY6TUo.K0Ii', 'Sardorbek Axadjonov', '2007-04-24', 'nobody', 'off', 'en', 'system');
 
 -- Inserting mock data into memories table
 INSERT INTO memories (id, user_id, title, description, date, tags, location, place_name, privacy)
